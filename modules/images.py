@@ -307,6 +307,7 @@ def save_image(image, path, basename, seed=None, prompt=None, extension='png', i
             break
 
     image.save(fullfn, quality=opts.jpeg_quality, pnginfo=pnginfo)
+    image.path = fullfn
 
     target_side_length = 4000
     oversize = image.width > target_side_length or image.height > target_side_length
@@ -318,7 +319,11 @@ def save_image(image, path, basename, seed=None, prompt=None, extension='png', i
         elif oversize:
             image = image.resize((image.width * target_side_length // image.height, target_side_length), LANCZOS)
 
-        image.save(f"{fullfn_without_extension}.jpg", quality=opts.jpeg_quality, pnginfo=pnginfo)
+        fullfn_resized = f"{fullfn_without_extension}.jpg"
+        image.save(fullfn_resized, quality=opts.jpeg_quality, pnginfo=pnginfo)
+        image.path_resized = fullfn_resized
+    else:
+        image.path_resized = None
 
     if opts.save_txt and info is not None:
         with open(f"{fullfn_without_extension}.txt", "w", encoding="utf8") as file:
